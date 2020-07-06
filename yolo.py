@@ -20,10 +20,12 @@ from yolo3.utils import letterbox_image
 
 class YOLO(object):
     def __init__(self):
-        self.model_path = 'model_data/yolo.h5'
+        #self.model_path = 'model_data/yolo_dji_final.h5'   # final weights includes Toronto data but no snow training
+        self.model_path = 'model_data/yolo_dji.h5'    # final weights of paper 1
+        #self.anchors_path = 'model_data/yolo_dji_anchors.txt'
         self.anchors_path = 'model_data/yolo_anchors.txt'
-        self.classes_path = 'model_data/coco_classes.txt'
-        self.score = 0.5
+        self.classes_path = 'model_data/dji_classes.txt'
+        self.score = 0.1
         self.iou = 0.5
         self.class_names = self._get_class()
         self.anchors = self._get_anchors()
@@ -95,13 +97,12 @@ class YOLO(object):
                 K.learning_phase(): 0
             })
         return_boxs = []
-        return_scores = []
         for i, c in reversed(list(enumerate(out_classes))):
             predicted_class = self.class_names[c]
-            if predicted_class != 'person' :
-                continue
+            #if predicted_class != 'person' :
+                #continue
             box = out_boxes[i]
-            score = out_scores[i]
+           # score = out_scores[i]  
             x = int(box[1])  
             y = int(box[0])  
             w = int(box[3]-box[1])
@@ -113,9 +114,8 @@ class YOLO(object):
                 h = h + y
                 y = 0 
             return_boxs.append([x,y,w,h])
-            return_scores.append(score)
 
-        return return_boxs, return_scores
+        return return_boxs
 
     def close_session(self):
         self.sess.close()
