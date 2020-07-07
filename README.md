@@ -1,3 +1,11 @@
+---
+### A complete implementation of paper [Orientation- and Scale-Invariant Multi-Vehicle Detection and Tracking from Unmanned Aerial Videos](http://jiewang.name/publications/rsmdpi2019) is 
+#### 1. Fine-tune the vehicle detector with the dataset [UAV-Vehicle-Detection-Dataset](https://github.com/jwangjie/UAV-Vehicle-Detection-Dataset). 
+#### 2. Step by step fine-tuning the vehicle detector [Fine-tune-YOLOv3](https://github.com/jwangjie/Fine-tune-YOLOv3).
+#### 3. A multi-vehicle tracking is conducted by [deep_sort_yolov3](https://github.com/jwangjie/deep_sort_yolov3).
+
+---
+
 This is a customized tracker implementation of paper [Orientation- and Scale-Invariant Multi-Vehicle Detection and Tracking from Unmanned Aerial Videos](http://jiewang.name/publications/rsmdpi2019). The tracker is modified based on [cosine_metric_learning](https://github.com/nwojke/cosine_metric_learning/tree/feature/veri_dataset) and [deep_sort_yolov3](https://github.com/Qidian213/deep_sort_yolov3).  
 
 For multi-vehicle detection, refer to [UAV-Vehicle-Detection-Dataset](https://github.com/jwangjie/UAV-Vehicle-Detection-Dataset).
