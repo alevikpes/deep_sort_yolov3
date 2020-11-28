@@ -1,2 +1,6 @@
+**.h5
 *.py[co]
 *.sw[op]
+**.weights
+
+__pycache__/
