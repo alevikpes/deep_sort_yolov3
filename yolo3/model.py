@@ -102,24 +102,26 @@ def yolo_head(feats, anchors, num_classes, input_shape):
     grid = K.cast(grid, K.dtype(feats))
 
     feats = K.reshape(
-        feats, [-1, grid_shape[0], grid_shape[1], num_anchors, num_classes + 5])
+        feats, [-1, grid_shape[0], grid_shape[1],
+                num_anchors, num_classes + 5])
 
     box_xy = K.sigmoid(feats[..., :2])
     box_wh = K.exp(feats[..., 2:4])
     box_confidence = K.sigmoid(feats[..., 4:5])
     box_class_probs = K.sigmoid(feats[..., 5:])
 
-    # Adjust preditions to each spatial grid point and anchor size.
-    box_xy = (box_xy + grid) / K.cast(grid_shape[::-1], K.dtype(feats))
-    box_wh = box_wh * anchors_tensor / K.cast(input_shape[::-1], K.dtype(feats))
+    # Adjust predictions to each spatial grid point and anchor size.
+    box_xy = (box_xy + grid) / K.cast(grid_shape[...,::-1], K.dtype(feats))
+    box_wh = (box_wh * anchors_tensor /
+              K.cast(input_shape[...,::-1], K.dtype(feats)))
 
     return box_xy, box_wh, box_confidence, box_class_probs
 
 
 def yolo_correct_boxes(box_xy, box_wh, input_shape, image_shape):
     '''Get corrected boxes'''
-    box_yx = box_xy[..., ::-1]
-    box_hw = box_wh[..., ::-1]
+    box_yx = box_xy[...,::-1]
+    box_hw = box_wh[...,::-1]
     input_shape = K.cast(input_shape, K.dtype(box_yx))
     image_shape = K.cast(image_shape, K.dtype(box_yx))
     new_shape = K.round(image_shape * K.min(input_shape/image_shape))
@@ -341,7 +343,7 @@ def yolo_loss(args, anchors, num_classes, ignore_thresh=.5):
         pred_box = K.concatenate([pred_xy, pred_wh])
 
         # Darknet box loss.
-        xy_delta = (y_true[l][..., :2]-pred_xy)*grid_shapes[l][::-1]
+        xy_delta = (y_true[l][..., :2]-pred_xy)*grid_shapes[l][...,::-1]
         wh_delta = K.log(y_true[l][..., 2:4]) - K.log(pred_wh)
         # Avoid log(0)=-inf.
         wh_delta = K.switch(object_mask, wh_delta, K.zeros_like(wh_delta))

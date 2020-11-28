@@ -4,7 +4,9 @@ import errno
 import argparse
 import numpy as np
 import cv2
-import tensorflow as tf
+from tensorflow import import_graph_def
+from tensorflow.compat.v1 import GraphDef, Session, get_default_graph
+from tensorflow.io.gfile import GFile
 
 
 def _run_in_batches(f, data_dict, out, batch_size):
@@ -72,14 +74,14 @@ class ImageEncoder(object):
 
     def __init__(self, checkpoint_filename, input_name="images",
                  output_name="features"):
-        self.session = tf.Session()
-        with tf.gfile.GFile(checkpoint_filename, "rb") as file_handle:
-            graph_def = tf.GraphDef()
+        self.session = Session()
+        with GFile(checkpoint_filename, "rb") as file_handle:
+            graph_def = GraphDef()
             graph_def.ParseFromString(file_handle.read())
-        tf.import_graph_def(graph_def, name="net")
-        self.input_var = tf.get_default_graph().get_tensor_by_name(
+        import_graph_def(graph_def, name="net")
+        self.input_var = get_default_graph().get_tensor_by_name(
             "net/%s:0" % input_name)
-        self.output_var = tf.get_default_graph().get_tensor_by_name(
+        self.output_var = get_default_graph().get_tensor_by_name(
             "net/%s:0" % output_name)
 
         assert len(self.output_var.get_shape()) == 2

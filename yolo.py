@@ -21,7 +21,8 @@ from yolo3.utils import letterbox_image
 class YOLO(object):
     def __init__(self):
         #self.model_path = 'model_data/yolo_dji_final.h5'   # final weights includes Toronto data but no snow training
-        self.model_path = 'model_data/yolo_dji.h5'    # final weights of paper 1
+        # FIXME: move to settings
+        self.model_path = 'model_data/yolov3_aerial.h5'    # final weights of paper 1
         #self.anchors_path = 'model_data/yolo_dji_anchors.txt'
         self.anchors_path = 'model_data/yolo_anchors.txt'
         self.classes_path = 'model_data/dji_classes.txt'
